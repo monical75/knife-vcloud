@@ -1,5 +1,9 @@
 # Changes
 
+### 2019-09-09 (1.5.0)
+
+* Added 'vcloud_ssl_ciphers' parameter to the VCloudClient::Connection in order to connect to servers with old versions of SSL 
+
 ### 2015-03-31 (1.3.1)
 
 **Fixes**

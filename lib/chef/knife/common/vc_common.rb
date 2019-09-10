@@ -68,6 +68,11 @@ class Chef
                  :long => "--org ORG_NAME",
                  :description => "Organization to use (only for System Administrators)",
                  :proc => Proc.new { |key| Chef::Config[:knife][:vcloud_org] = key }
+
+          option :vcloud_ssl_ciphers,
+                 :long => "--vcloud_ssl_ciphers ciphers_list",
+                 :description => "ssl_ciphers list specific for SSL, i.e. 'HIGH:MEDIUM:!LOW:!kEDH:!aNULL:!ADH:!eNULL:!EXP:!SSLv1:!SEED:!CAMELLIA:!PSK'",
+                 :proc => Proc.new { |key| Chef::Config[:knife][:vcloud_ssl_ciphers] = key }                 
         end
       end
 
@@ -85,12 +90,19 @@ class Chef
 
           passwd = get_password(pemfile)
 
+
+          if locate_config_value(:vcloud_ssl_ciphers)
+            ciphers = locate_config_value(:vcloud_ssl_ciphers)
+            vcloud_ssl_ciphers = {ssl_ciphers: ciphers}
+          end
+
           @connection = VCloudClient::Connection.new(
               locate_config_value(:vcloud_url),
               locate_config_value(:vcloud_user_login),
               passwd,
               locate_config_value(:vcloud_org_login),
-              locate_config_value(:vcloud_api_version)
+              locate_config_value(:vcloud_api_version),
+              vcloud_ssl_ciphers
           )
         end
 
